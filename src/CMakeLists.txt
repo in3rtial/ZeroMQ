@@ -10,3 +10,6 @@ target_link_libraries(pricepub zmq ubsan)
 
 add_executable(priceclient priceclient.cpp)
 target_link_libraries(priceclient zmq ubsan)
+
+add_executable(taskvent taskvent.cpp)
+target_link_libraries(taskvent zmq ubsan)

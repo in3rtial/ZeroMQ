@@ -3,27 +3,17 @@
 #include <string>
 #include <unistd.h>
 #include <assert.h>
-
-namespace
-{
-constexpr auto send_none = zmq::send_flags::none;
-constexpr auto recv_none = zmq::recv_flags::none;
-
-void print_version() {
-    int major, minor, patch;
-    zmq_version(&major, &minor, &patch);
-    std::cout << "ZeroMQ v" << major << "." << minor << "." << patch;
-}
-}
-
+#include "utils.h"
 
 int main (void)
 {
+    using namespace utils;
+    using namespace zmq;
     print_version();
 
     // Socket to talk to clients
-    zmq::context_t context;
-    zmq::socket_t socket(context, ZMQ_REP);
+    context_t context;
+    socket_t socket(context, ZMQ_REP);
     const std::string bindAddr{"tcp://*:5555"};
     socket.bind(bindAddr);
 
@@ -31,14 +21,14 @@ int main (void)
 
     while (true) {
         // wait for request
-        zmq::message_t request;
+        message_t request;
         const auto recv_result = socket.recv(request, recv_none);
         assert(recv_result.value() > 0);
         std::cout << "Received " << request << std::endl;
 
         // send reply back
         const std::string replyMsg{ "World" };
-        zmq::message_t reply{ replyMsg };
+        message_t reply{ replyMsg };
         socket.send(reply, send_none);
     }
     return 0;

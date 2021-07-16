@@ -6,20 +6,22 @@
 int main (void)
 {
     using namespace utils;
+    using namespace zmq;
+
     print_version();
 
-    zmq::context_t context;
-    zmq::socket_t subscriber(context, ZMQ_SUB);
+    context_t context;
+    socket_t subscriber(context, ZMQ_SUB);
 
     std::cout << "Initializing price subscriber..." << std::endl;
     subscriber.connect("tcp://localhost:5556");
 
     // subscribe to prices for futures and options
-    subscriber.set(zmq::sockopt::subscribe, "FUT");
-    subscriber.set(zmq::sockopt::subscribe, "OPT");
+    subscriber.set(sockopt::subscribe, "FUT");
+    subscriber.set(sockopt::subscribe, "OPT");
     while(true)
     {
-        zmq::message_t msg;
+        message_t msg;
         const auto result = subscriber.recv(msg);
 
         if(!result || result.value() < 3) {

@@ -1,14 +1,14 @@
 #include <zmq.hpp>
-#include <cstdint>
 #include "utils.h"
 
-int main (void)
+int main ()
 {
     using namespace utils;
+    using namespace zmq;
     print_version();
 
-    zmq::context_t context;
-    zmq::socket_t socket(context, ZMQ_PUB);
+    context_t context;
+    socket_t socket(context, ZMQ_PUB);
 
     std::cout << "Initializing publisher..." << std::endl;
     socket.bind("tcp://*:5556");
@@ -27,8 +27,7 @@ int main (void)
         msg << secTypes.at(i%3) << "; "<< i << "; " << price;
 
         // package and send
-        socket.send(zmq::message_t(msg.str()),
-                    send_none);
+        socket.send(message_t(msg.str()), send_none);
 
         usleep(100000);
     }
